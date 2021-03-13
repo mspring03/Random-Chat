@@ -14,6 +14,7 @@ enum ResponseStatus {
   UNAUTHORIZED = 401,
   FORBIDDEN = 403,
   NOT_FOUND = 404,
+  CONFLICT = 409,
   INTERNAL_ERROR = 500,
 }
 
@@ -61,6 +62,12 @@ export class NotFoundResponse extends ApiResponse {
   send(res: Response): Response {
     this.url = res.req.originalUrl;
     return super.prepare<NotFoundResponse>(res, this);
+  }
+}
+
+export class ConfilctResponse extends ApiResponse {
+  constructor(message = 'Conflict') {
+    super(StatusCode.FAILURE, ResponseStatus.CONFLICT, message);
   }
 }
 
