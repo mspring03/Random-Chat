@@ -41,7 +41,7 @@ export default class JWT {
 
 export class JwtPayload {
   aud: string;
-  sub: number;
+  sub: string;
   iss: string;
   iat: number;
   exp: number;
@@ -50,7 +50,7 @@ export class JwtPayload {
   constructor(
     issuer: string,
     audience: string,
-    subject: number,
+    subject: string,
     param: string,
     validity: number,
   ) {
