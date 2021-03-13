@@ -7,6 +7,7 @@ import {
   NotFoundResponse,
   BadRequestResponse,
   ForbiddenResponse,
+  ConfilctResponse,
 } from './apiResponse';
 
 enum ErrorType {
@@ -16,6 +17,7 @@ enum ErrorType {
   ACCESS_TOKEN = 'AccessTokenError',
   INTERNAL = 'InternalError',
   NOT_FOUND = 'NotFoundError',
+  CONFILCT = 'ConfilctError',
   NO_ENTRY = 'NoEntryError',
   NO_DATA = 'NoDataError',
   BAD_REQUEST = 'BadRequestError',
@@ -43,6 +45,8 @@ export abstract class ApiError extends Error {
         return new NotFoundResponse(err.message).send(res);
       case ErrorType.BAD_REQUEST:
         return new BadRequestResponse(err.message).send(res);
+      case ErrorType.CONFILCT:
+        return new ConfilctResponse(err.message).send(res);
       case ErrorType.FORBIDDEN:
         return new ForbiddenResponse(err.message).send(res);
       default: {
@@ -70,6 +74,12 @@ export class InternalError extends ApiError {
 export class BadRequestError extends ApiError {
   constructor(message = 'Bad Request') {
     super(ErrorType.BAD_REQUEST, message);
+  }
+}
+
+export class ConflictError extends ApiError {
+  constructor(message = 'Conflict') {
+    super(ErrorType.CONFILCT, message);
   }
 }
 
