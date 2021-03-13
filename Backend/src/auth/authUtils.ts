@@ -1,7 +1,7 @@
-import { Tokens } from 'app-request';
+import { Tokens } from '../types/app-request';
 import { AuthFailureError, InternalError } from '../core/apiError';
 import JWT, { JwtPayload } from '../core/JWT';
-import { User } from '../database/model/User';
+import User from '../database/model/User';
 import { tokenInfo } from '../config';
 
 export const getAccessToken = (authorization: string) => {
@@ -26,7 +26,7 @@ export const validateTokenData = (payload: JwtPayload): boolean => {
 };
 
 export const createTokens = async (
-  user: User,
+  subject: any,
   accessTokenKey: string,
   refreshTokenKey: string,
 ): Promise<Tokens> => {  
@@ -34,7 +34,7 @@ export const createTokens = async (
     new JwtPayload(
       tokenInfo.issuer,
       tokenInfo.audience,
-      user.uuid,
+      subject,
       accessTokenKey,
       tokenInfo.accessTokenValidityDays,
     ),
@@ -46,7 +46,7 @@ export const createTokens = async (
     new JwtPayload(
       tokenInfo.issuer,
       tokenInfo.audience,
-      user.uuid,
+      subject,
       refreshTokenKey,
       tokenInfo.refreshTokenValidityDays,
     ),
