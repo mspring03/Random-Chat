@@ -1,41 +1,69 @@
-import express, { Application } from 'express'
+import express, { Request, Response, NextFunction, Application } from 'express'
 import morgan from 'morgan'
-import { port } from '../config'
+import { ApiError, NotFoundError } from '../core/apiError';
+import * as SocketIO from "socket.io";
+import { Server as IO } from 'socket.io';
 import cors from 'cors';
 import Database from './database'
 import Logger from '../core/Logger'
 import router from '../routes';
-
-//routes imp
-// import indexRoutes from './routes/index.routes'
-// import taskRoutes from './routes/tasks.routes'
+import { Server, createServer } from 'http';
 
 class App{
     app: Application;
+    httpServer: Server;
+    io: IO;
     db: Database;
-    PORT: number | string;
 
     constructor(){
         this.app = express();
         this.db = new Database();
-        this.PORT = port;
+        this.httpServer = createServer(this.app)
     }
-    public async initDb(): Promise<void> {
-        await this.db.connection()
+
+    public initDb(): void {
+        this.db.connection()
     }
+
     public initMiddlewares(): void {
         this.app.use(cors());
         this.app.use(express.json())
         this.app.use(express.urlencoded({extended: false}))
         this.app.use(morgan('dev'))
     }
+    
     public initRoutes(): void {
         this.app.get('/', (req, res) => res.status(200).json({ message: 'Hello World' }));
-        // this.app.use('/', router);
+        this.app.use('/', router);
     } 
-    public async run(): Promise<void> {
-        await this.app.listen(this.PORT)
-        Logger.info('Server on port:', this.PORT)
+
+    public errorHandler(): void {
+        this.app.use((req, res, next) => next(new NotFoundError()));
+        this.app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
+            if (err instanceof ApiError) {
+                ApiError.handle(err, res);
+            }
+            else {
+                Logger.error(err);
+                return res.status(500).send(err.message);
+            }
+        });
+    }
+
+    public socketServer(): void {
+        this.io = SocketIO.listen(this.httpServer, { origins: "*:*" });
+        // socketInit(this.io);
+
+    }
+
+    public listen(port, callback: () => void): void {
+        this.initDb();
+        this.httpServer.listen(port);
+        callback();
+
+        this.initMiddlewares();
+        this.initRoutes();
+        this.errorHandler();
     }
 }
 
