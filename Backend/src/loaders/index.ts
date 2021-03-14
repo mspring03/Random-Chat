@@ -8,6 +8,7 @@ import Database from './database'
 import Logger from '../core/Logger'
 import router from '../routes';
 import { Server, createServer } from 'http';
+import socketConnet from '../socket'
 
 class App{
     app: Application;
@@ -52,8 +53,7 @@ class App{
 
     public socketServer(): void {
         this.io = SocketIO.listen(this.httpServer, { origins: "*:*" });
-        // socketInit(this.io);
-
+        socketConnet(this.io);
     }
 
     public listen(port, callback: () => void): void {
