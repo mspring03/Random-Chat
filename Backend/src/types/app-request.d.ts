@@ -15,7 +15,7 @@ declare interface ProtectedRequest extends RoleRequest {
   accessToken: string;
 }
 
-declare interface Tokens {
+export declare interface Tokens {
   accessToken: string;
   refreshToken: string;
 }
