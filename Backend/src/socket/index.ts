@@ -10,7 +10,7 @@ export default (io: IO) => {
             timeout: 15000 
         }))
         .on('authenticated', (socket) => {
-            socketServer(io, socket);
+            socketServer(io, socket)
             console.log(`hello! ${socket.decoded_token.name}`);
         });
 } 
