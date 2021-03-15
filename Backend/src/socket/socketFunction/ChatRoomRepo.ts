@@ -46,6 +46,8 @@ class ChatRoomRepository {
 
     public static async userMatching(socket, tag: string) {
         while(1) {
+            await ChatRoom.update({ socket: socket }, { $set: { matching: false }});
+            
             setTimeout(() => {}, 3000);
 
             const roomPeopleCount = await ChatRoom.count({ matching: {$not: {$eq:true}}, tag: tag });                       
@@ -56,9 +58,10 @@ class ChatRoomRepository {
 
             const check = await ChatRoom.findOneAndUpdate({ _id: matchedPeople['_id'], tag: tag, matching: {$not: {$eq:true}} }, { matching: true }, { new: true });
             if (check) return check;
-            await ChatRoom.update({ socket: socket }, { $set: { matching: false }});
         } 
     }
+
+
 }
 
 export default ChatRoomRepository;
