@@ -1,5 +1,8 @@
 /Backend/node_modules
 /Backend/src/logs
 
+/Frontend/node_modules
+
+.DS_Store
 .env
 .prettierrc
