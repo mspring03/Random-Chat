@@ -1,0 +1,1 @@
+export { default as authImage} from './authImage.svg';
