@@ -69,7 +69,9 @@ export const FormWarnMessage = styled.div`
     position: relative;
     top: 9px;
     background-color: white;
-    display:inline-block;
+    z-index: 1;
+    clear:both;
+    float:left;
     opacity: ${props => props.message? 1 : 0};
 `;
 
