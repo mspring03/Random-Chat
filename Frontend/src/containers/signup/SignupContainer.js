@@ -37,21 +37,45 @@ const SigninContainer = () => {
     checkPassword: useRef(),
     nickname: useRef(),
   };
+
+  const { id, password, checkPassword, nickname, description, tag } = state;
+
   const inputClickHandler = useCallback((e) => {
     e.target.classList.remove("problem");
+    changeCheckId(false)
+    changeCheckNickname(false)
   }, []);
 
   const inputPasswordClickHandler = useCallback((e) => {
     formRefs.password.current.classList.remove("problem");
     formRefs.checkPassword.current.classList.remove("problem");
-    changeCheckPw(false)
-  }, []);
 
-  const { id, password, checkPassword, nickname, description, tag } = state;
+    changeCheckPw(false)
+  }, [password, checkPassword]);
 
   console.log(state);
+
   const signup = useCallback(async () => {
-    if (!id.length) formRefs.id.current.classList.add("problem");
+    if (!id.length) {
+        formRefs.id.current.classList.add("problem");
+        return; 
+    }
+
+    if (!password.length) {
+        formRefs.password.current.classList.add("problem");
+        return; 
+    }
+
+    if (!checkPassword.length) {
+        console.log(1);
+        formRefs.checkPassword.current.classList.add("problem");
+        return;
+    }
+
+    if (!nickname.length) {
+        formRefs.nickname.current.classList.add("problem")
+        return;
+    }
 
     if (password !== checkPassword) {
         changeCheckPw(true);
@@ -76,10 +100,21 @@ const SigninContainer = () => {
       if (res.status === 200) {
         console.log(res);
       } else console.log(res);
+
+      alert('회원가입 성공');
     } catch (err) {
         console.log(err);
+        if (err.data.message === "User already registered") {
+            formRefs.id.current.classList.add("problem");
+            changeCheckId(true);
+        }
+
+        if (err.data.message === "Nickname already in use") {
+            formRefs.nickname.current.classList.add("problem");
+            changeCheckNickname(true);
+        }
     }
-  }, [id, password]);
+  }, [id, password, checkPassword, nickname, description, tag]);
 
   return (
     <S.Container>
@@ -112,7 +147,7 @@ const SigninContainer = () => {
             onChange={onChange}
             onClick={inputPasswordClickHandler}
           ></S.FormInput>
-          <S.FormWarnMessage>이미 있는 닉네임</S.FormWarnMessage>
+          <S.FormWarnMessage message={checkNickname}>이미 있는 닉네임</S.FormWarnMessage>
           <S.FormInput
             name="nickname"
             ref={formRefs.nickname}
