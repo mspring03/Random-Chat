@@ -13,7 +13,7 @@ export const requestApi = async (url, body, header, method) => {
 		return res;
 	} catch (err) {
 		if (err.response) {
-			throw err.response.status;
+			throw err.response;
 		}
 		alert('네트워크 연결을 확인해 주세요');
 		throw null;
