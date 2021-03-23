@@ -1,15 +1,17 @@
 import React from 'react';
 import {Route, BrowserRouter} from 'react-router-dom';
-import LoginContainer from './containers/login/LoginContainer';
-import SignupContainer from './containers/signup/SignupContainer'
+import Login from './containers/LoginContainer/LoginContainer';
+import Signup from './containers/SignupContainer/SignupContainer';
+import guestLogin from './containers/GuestLoginContainer/GuestLoginContainer'
 import GlobalStyle from './GlobalStyle';
 
 const App = () => {
     return (
         <BrowserRouter>
         <GlobalStyle />
-            <Route path="/login" component={LoginContainer} />
-            <Route path='/signup' component={SignupContainer} />
+            <Route path='/login' component={Login} />
+            <Route path='/guestLogin' component={guestLogin} />
+            <Route path='/signup' component={Signup} />
         </BrowserRouter>
     );
 
