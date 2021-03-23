@@ -1,12 +1,15 @@
 import React, { useState, useCallback } from 'react';
-import {authImage} from '../../assets';
-import { requestApi } from '../../APIrequest'
+import {Link} from 'react-router-dom';
+import {authImage} from '../../../assets';
+import { requestApi } from '../../../APIrequest'
 import * as S from './style';
+import { useHistory } from 'react-router-dom';
 
-const LoginContainer = () => {
+const Login = () => {
     const [id, changeId] = useState('');
 	const [password, changePassword] = useState('');
     const [checkID, setChekID] = useState(false);
+    const history = useHistory();
 
     const idOnChange = useCallback((e) => {
 		changeId(e.target.value);
@@ -51,13 +54,13 @@ const LoginContainer = () => {
                     <S.FormMessage check={checkID} >입력하신 이메일 주소 또는 휴대폰 번호가 계정에 연결되지 않았습니다.</S.FormMessage>
                 </S.FormBody>
                 <S.FormFooter>
-                <S.FormButton backgroundColor="#4843C4" color="white" borderColor="#4843C4" onClick={login}>로그인</S.FormButton>
-                    <S.FormButton backgroundColor="white" color="#4843C4" borderColor="#4843C4">게스트 아이디로 로그인</S.FormButton>
-                    <S.FormLink href="/signup">회원가입하기</S.FormLink>
+                    <S.FormButton backgroundColor="#4843C4" color="white" borderColor="#4843C4" onClick={login}>로그인</S.FormButton>
+                    <S.FormButton backgroundColor="white" color="#4843C4" borderColor="#4843C4" onClick={() => history.push('/guestLogin')}>게스트 아이디로 로그인</S.FormButton>
+                    <S.FormLink onClick={() => history.push('/signup')}>회원가입하기</S.FormLink>
                 </S.FormFooter>
             </S.FormWrap>
         </S.Container>
     );
 }
 
-export default LoginContainer;
+export default Login;
