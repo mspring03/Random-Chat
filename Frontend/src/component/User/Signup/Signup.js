@@ -1,7 +1,8 @@
 import React, { useState, useCallback, useReducer, useRef } from "react";
-import { authImage } from "../../assets";
-import { requestApi } from "../../APIrequest";
+import { authImage } from "../../../assets";
+import { requestApi } from "../../../APIrequest";
 import * as S from "./style";
+import { useHistory } from 'react-router-dom';
 
 function reducer(state, action) {
   return {
@@ -18,10 +19,11 @@ function useInputs(initialForm) {
   return [state, onChange];
 }
 
-const SigninContainer = () => {
+const Signup = () => {
   const [checkId, changeCheckId] = useState(false);
   const [checkNickname, changeCheckNickname] = useState(false);
   const [checkPw, changeCheckPw] = useState(false);
+  const history = useHistory();
 
   const [state, onChange] = useInputs({
     id: "",
@@ -177,11 +179,11 @@ const SigninContainer = () => {
           >
             회원가입
           </S.FormButton>
-          <S.FormLink href="/login">로그인하기</S.FormLink>
+          <S.FormLink onClick={() => history.push('/login')}>로그인하기</S.FormLink>
         </S.FormFooter>
       </S.FormWrap>
     </S.Container>
   );
 };
 
-export default SigninContainer;
+export default Signup;
