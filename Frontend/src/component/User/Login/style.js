@@ -92,4 +92,6 @@ export const FormLink = styled.a`
     color: #707070;
     text-decoration: underline;
     justify-content: center;
+    cursor: pointer;
+    ime-mode: inactive;
 `; 
