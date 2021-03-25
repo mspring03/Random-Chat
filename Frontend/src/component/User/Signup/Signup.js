@@ -69,7 +69,6 @@ const Signup = () => {
     }
 
     if (!checkPassword.length) {
-        console.log(1);
         formRefs.checkPassword.current.classList.add("problem");
         return;
     }
@@ -80,7 +79,6 @@ const Signup = () => {
     }
 
     if (password !== checkPassword) {
-        changeCheckPw(true);
         formRefs.password.current.classList.add("problem");
         formRefs.checkPassword.current.classList.add("problem");
 
@@ -99,9 +97,6 @@ const Signup = () => {
         {},
         "post"
       );
-      if (res.status === 200) {
-        console.log(res);
-      } else console.log(res);
 
       alert('회원가입 성공');
     } catch (err) {
