@@ -63,6 +63,7 @@ class App{
 
         this.initMiddlewares();
         this.initRoutes();
+        this.socketServer();
         this.errorHandler();
     }
 }
