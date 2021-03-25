@@ -39,9 +39,6 @@ const GuestLogin = () => {
         {},
         "post"
       );
-      if (res.status === 200) {
-        console.log(res);
-      } else console.log(res);
 
       alert("로그인");
     } catch (err) {
