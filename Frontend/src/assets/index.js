@@ -1,1 +1,1 @@
-export { default as authImage} from './authImage.svg';
+export { default as authImage } from './authImage.svg';
