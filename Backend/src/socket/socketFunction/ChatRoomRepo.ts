@@ -1,4 +1,3 @@
-import { IOptions } from 'socketio-jwt';
 import ChatRoom from '../../database/model/ChatRoom';
 import User from '../../database/model/User'
 import { Server as IO } from 'socket.io';
