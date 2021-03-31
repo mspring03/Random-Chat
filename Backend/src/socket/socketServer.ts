@@ -5,7 +5,8 @@ import { Server as IO } from 'socket.io';
 
 export default (io: IO, socket) => {
     socket.on('online', async (id: string) => {
-        UserRepository.UserStatesUpdate(socket.id, id);
+        await UserRepository.UserStatesUpdate(socket.id, id);
+    
         socket.emit('numberOfPeopleAllRoom', await ChatRoomRepository.countAllRoomPeople());
     });
 
@@ -19,40 +20,42 @@ export default (io: IO, socket) => {
     socket.on('outRoom', async () => {
         const user = await ChatRoomRepository.goOutRoom(socket.id);
         socket.emit('numberOfPeopleAllRoom', await ChatRoomRepository.countAllRoomPeople());
+        if (!user) return;
         ChatRoomRepository.ChangedAllRoomPeople(io);
         ChatRoomRepository.ChangedRoomPeople(io, user['tag']);
     })
 
     socket.on('matching', async (tag: string) => {
         const matchedUser = await ChatRoomRepository.userMatching(socket.id, tag);
+        if (!matchedUser) return 0;
+        
         const myInfo = await UserRepository.FindBySocketID(socket.id);
         const userInfo = await UserRepository.FindBySocketID(matchedUser['socket']);
         
         const chatLog = await ChatLogRepository.findChatLog(myInfo['nickname'], userInfo['nickname']); 
-        let roomName = chatLog['roomName'];
+        let roomName = chatLog ? chatLog['roomName'] : '';
 
-        if (!chatLog) {
-            roomName = `${myInfo['nickname']}&${userInfo['nickname']}`;
-            ChatLogRepository.createChatRoom(roomName)
-        }
+        if (!chatLog) roomName = `${myInfo['nickname']}&${userInfo['nickname']}`;
 
-        // matchedUser['socket'].join(roomName);
         io.to(matchedUser['socket']).emit('join', roomName);
-        socket.join(roomName);
+        io.to(socket.id).emit('join', roomName)
 
-        UserRepository.joinRoom(socket.id, roomName);
-        UserRepository.joinRoom(matchedUser['socket'], roomName)
+        await UserRepository.joinRoom(socket.id, roomName);
+        await UserRepository.joinRoom(matchedUser['socket'], roomName)
 
-        io.sockets.to(roomName).emit('randomUserFindingCompete', roomName)
+        io.sockets.to(roomName).emit('randomUserFindingCompete', { info1: myInfo, info2: userInfo })
     })
 
     socket.on('roomjoin', async (roomName) => {
         socket.join(roomName)
     })
 
-    socket.on('message', async (result) => {
+    socket.on('messageSend', async (result) => {
+        console.log(result);
+        
         io.sockets.to(result['roomName']).emit('message', { data: result['data'], nickname: result['nickname'] });
-        ChatLogRepository.saveChatingLog(result['roomName'], result['data'], result['nickname'])
+        // socket.emit('message', { data: 'akdadsf', nickname: '망나나망' })
+
     })
 
     socket.on('roomClosing', async (roomName) => {
@@ -64,15 +67,18 @@ export default (io: IO, socket) => {
     })
 
     socket.on('disconnect', async () => {
+        const User = await UserRepository.disconnect(socket.id);
 
-        console.log('disconnect');
-        const User = UserRepository.disconnect(socket.id);
-        if(User['roomName']) io.sockets.to(User['roomName']).emit("chatEnd");
+        if (User == null) return;
+        
+        if (User['accessRoom']) io.sockets.to(User['accessRoom']).emit("chatEnd");
 
         const ChatRoom = await ChatRoomRepository.goOutRoom(socket.id);
-        if(ChatRoom) {
+        if (ChatRoom) {
             ChatRoomRepository.ChangedAllRoomPeople(io);
             ChatRoomRepository.ChangedRoomPeople(io, ChatRoom['tag']);
         }
+        
+        if (User['guest']) UserRepository.deleteUser(User['id']);
     })
 }
