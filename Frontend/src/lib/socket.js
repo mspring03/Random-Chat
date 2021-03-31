@@ -7,9 +7,12 @@ class ChatSocket {
     this.socket = io.connect(url);
   }
 
-  test() {
-    this.socket.emit('data')
+  getSocket() {
+    return this.socket;
+  }
 
+  test() {
+    this.socket.emit("data");
   }
 }
 
