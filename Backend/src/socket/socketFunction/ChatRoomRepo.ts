@@ -1,7 +1,6 @@
 import ChatRoom from '../../database/model/ChatRoom';
 import User from '../../database/model/User'
 import { Server as IO } from 'socket.io';
-import { match } from 'node:assert';
 
 class ChatRoomRepository {
     public static async roomJoin(socket, tag: string) {   
@@ -14,9 +13,9 @@ class ChatRoomRepository {
 
     public static async ChangedAllRoomPeople(io: IO) {
         const connectionPeopleList = await User.where('connection').equals(true);
-
+        
         connectionPeopleList.forEach(async user => {
-            io.to(user['socket']).emit('ChangedAllRoomPeople', await this.countAllRoomPeople());
+            io.to(user['socket']).emit('numberOfPeopleAllRoom', await this.countAllRoomPeople());
         });
     }
 
@@ -24,7 +23,7 @@ class ChatRoomRepository {
         const roomPeopleList = await ChatRoom.where('tag').equals(tag);
 
         roomPeopleList.forEach(async user => {
-            io.to(user['socket']).emit('ChangedRoomPeople', await this.countRoomPeople(tag));
+            io.to(user['socket']).emit('numberOfPropleMyRoom', await this.countRoomPeople(tag));
         });
     }
 
@@ -32,10 +31,14 @@ class ChatRoomRepository {
         return await ChatRoom.aggregate([
             {
                 '$group' : {
-                    '_id': '$tag',
-                    'people': {'$sum': 1}
+                    // _id: {'$addToSet': '$_id'},
+                    _id: '$tag',
+                    people: {'$sum': 1}
                 }
-            }
+            },
+            {'$sort' : 
+                {'people': -1} 
+            },
         ])
     }
 
@@ -43,18 +46,28 @@ class ChatRoomRepository {
         return await ChatRoom.count({ tag: tag });
     }
 
+    public static async sleep(ms) {
+        return new Promise((r) => setTimeout(r, ms))
+    }
+
     public static async userMatching(socket, tag: string) {
         while(1) {
-            await ChatRoom.update({ socket: socket }, { $set: { matching: false }});
-            
-            setTimeout(() => {}, 3000);
+            await ChatRoom.findOneAndUpdate({ socket: socket }, { $set: { matching: false }});
+                      
+            await this.sleep(3000);
 
-            const roomPeopleCount = await ChatRoom.count({ matching: {$not: {$eq:true}}, tag: tag });                       
+            const matchingCheck = await ChatRoom.findOneAndUpdate({ socket: socket }, { $set: { matching: true }}, { new: false });
+            if (matchingCheck == undefined || matchingCheck['matching']) return 0;
+
+            const roomPeopleCount = await ChatRoom.count({ matching: {$not: {$eq:true}}, tag: tag });
+            if (!roomPeopleCount) continue;
+             
             const skipsize = Math.floor(Math.random() * roomPeopleCount);
 
-            const matchedPeople = await ChatRoom.findOne({ matching: {$not: {$eq:true}}, tag: tag }).skip(skipsize).limit(1);            
-            await ChatRoom.update({ socket: socket }, { $set: { matching: true }});
+            const matchedPeople = await ChatRoom.findOne({ matching: {$not: {$eq:true}}, tag: tag }).skip(skipsize).limit(1);  
 
+            if (!matchedPeople) continue;
+            
             const check = await ChatRoom.findOneAndUpdate({ _id: matchedPeople['_id'], tag: tag, matching: {$not: {$eq:true}} }, { matching: true }, { new: true });
             if (check) return check;
         } 
