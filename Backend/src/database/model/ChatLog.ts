@@ -4,7 +4,11 @@ const Schema = mongoose.Schema;
 
 export const ChatLog = new mongoose.Schema({
     roomName: { type: String, unique: true },
-    chating: [new mongoose.Schema({ message: String, nickname: String, time: Date })]
+    chating: [ new mongoose.Schema({ 
+        nickname: String, 
+        message: String, 
+        time: Date 
+    })]
 }, {
     versionKey: false 
 });
