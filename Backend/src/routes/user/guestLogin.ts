@@ -28,7 +28,7 @@ router.post(
     const randomId = `${req.body.nickname}${Math.random().toString(36).substr(2,11)}`
     const passwordHash = await bcrypt.hash(req.body.nickname, 10);
     
-    UserRepository.createguestUser(
+    UserRepository.createGuestUser(
       randomId,
       passwordHash,
       req.body.nickname,
