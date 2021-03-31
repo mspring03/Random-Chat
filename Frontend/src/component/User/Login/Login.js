@@ -5,7 +5,9 @@ import { requestApi } from '../../../APIrequest'
 import * as S from './style';
 import { useHistory } from 'react-router-dom';
 import * as io from "socket.io-client";
-import socket from '../../../lib/socket'
+import chatSocket from '../../../lib/socket'
+
+const socket = chatSocket.getSocket();
 
 const Login = () => {
     const [id, changeId] = useState('');
@@ -13,10 +15,6 @@ const Login = () => {
     const [checkID, setChekID] = useState(false);
     const history = useHistory();
     // const [socket, setSocket] = useState({})
-
-    // socket.on("connectsss", () => {
-    //     console.log(socket.id); // x8WIv7-mJelg7on_ALbx
-    // });
 
     // const socketOn = useCallback((e) => {
     //     console.log(123);
@@ -48,17 +46,15 @@ const Login = () => {
 				{},
 				'post',
 			);
-
 			localStorage.setItem('access_token', `Bearer ${res.data.data.tokens.accessToken}`);
             localStorage.setItem('user_id', res.data.data.user.id);
             localStorage.setItem('nickname', res.data.data.user.nickname);
-            localStorage.setItem('guest', res.data.data.user.guest);    
+            localStorage.setItem('guest', res.data.data.user.guest); 
             
-            socket.test()
-            // socketOn()
-
-            // alert("로그인 성공");
+            socket.emit("online", localStorage.getItem("user_id"));   
+            
             history.push('/main')
+            return
         } catch (err) {
             setChekID(true);
         }
