@@ -1,6 +1,5 @@
 import express from 'express';
 import { ForbiddenError } from '../core/apiError';
-import { PublicRequest } from 'app-request';
 import asyncHandler from '../middleware/asyncHandler';
 import { apiKey } from '../config';
 import Logger from '../core/Logger';
@@ -11,12 +10,12 @@ const router = express.Router();
 
 export default router.use(
   validator(schema.apiKey, ValidationSource.HEADER),
-  asyncHandler(async (req: PublicRequest, res, next) => {
-    req.apiKey = req.headers['x-api-key'].toString();
+  asyncHandler(async (req, res, next) => {
+    req['apiKey'] = req.headers['x-api-key'].toString();
 
-    Logger.info(req.apiKey);    
+    Logger.info(req['apiKey']);    
 
-    if (req.apiKey !== apiKey) throw new ForbiddenError();
+    if (req['apiKey'] !== apiKey) throw new ForbiddenError();
 
     return next();
   }),
