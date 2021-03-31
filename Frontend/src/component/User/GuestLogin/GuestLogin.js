@@ -16,7 +16,7 @@ const GuestLogin = () => {
 
   const onChange = useCallback((e) => {
     changeNickname(e.target.value);
-  });
+  }, []);
 
   const inputClickHandler = useCallback((e) => {
     e.target.classList.remove("problem");
@@ -25,7 +25,6 @@ const GuestLogin = () => {
   }, []);
 
   const login = useCallback(async () => {
-    console.log(nickname.length);
     if (!nickname.length) {
       formRefs.nickname.current.classList.add("problem");
       return;
@@ -39,8 +38,16 @@ const GuestLogin = () => {
         {},
         "post"
       );
+      console.log(res);
+      localStorage.setItem(
+        "access_token",
+        `Bearer ${res.data.data.tokens.accessToken}`
+      );
+      localStorage.setItem("user_id", res.data.data.user.id);
+      localStorage.setItem("nickname", res.data.data.user.nickname);
+      localStorage.setItem("guest", res.data.data.user.guest);
 
-      alert("로그인");
+      history.push("/main");
     } catch (err) {
       console.log(err);
 
