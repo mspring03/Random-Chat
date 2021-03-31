@@ -10,8 +10,8 @@ const User = new mongoose.Schema({
     tag: { type: String },
     connection: { type: Boolean },
     guest: { type: Boolean },
-    socket: { type: String },
-    accessRoom: { type: String },
+    socket: { type: String, default:'' },
+    accessRoom: { type: String, default:'' },
     Last_access_time: { type: String },
     created_at: { type: Date, default: Date.now }
 }, {
