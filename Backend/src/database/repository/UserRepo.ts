@@ -30,7 +30,7 @@ class UserRepository {
         })
     }
 
-    public static async createguestUser(
+    public static async createGuestUser(
         id: string,
         password: string,
         nickname: string,
