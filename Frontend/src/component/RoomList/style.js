@@ -16,7 +16,7 @@ export const Formbody = styled.div`
 `;
 
 export const Formlist = styled.div`
-height: 87.5%;
+    height: 87.5%;
     overflow: hidden;
     width: 100%;
 `;
