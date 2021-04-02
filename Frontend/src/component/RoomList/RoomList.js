@@ -25,18 +25,18 @@ const RoomList = () => {
     });
   }, []);
 
-  useEffect(() => {
-    const reloading = sessionStorage.getItem("reloading");
+  useEffect(async () => {
+    const reloading = await localStorage.getItem("reloadingRoomListPage");
     if (reloading) {
-        sessionStorage.removeItem("reloading");
-        console.log(13241324);
+        await localStorage.removeItem("reloadingRoomListPage");
         socket.emit("online", localStorage.getItem("user_id"));
+        history.push('/main')
     }
   }, [])
   
   useEffect(() => {
-    window.addEventListener("beforeunload", function(event) {
-      sessionStorage.setItem("reloading", "true");
+    window.addEventListener("beforeunload", async function(event) {
+      await localStorage.setItem("reloadingRoomListPage", "true");
     });
   }, []);
 
@@ -46,13 +46,6 @@ const RoomList = () => {
     history.push('/loading')
     socket.emit("joinRoom", e.target.firstChild.innerText);
   };
-
-  useEffect(() => {
-    window.addEventListener("beforeunload", function(event) {
-      event.returnValue = "Write something clever here..";
-      history.push('/main')
-    });
-  }, []);
 
   useEffect(() => {
     const List = list.map((info) => (
@@ -94,20 +87,17 @@ const RoomList = () => {
     (e) => {
       if (e.keyCode === 13) {
         filter();
-        chatSocket.test();
       }
     },
     [list, search]
   );
-
-  // c
 
   return (
     <S.Container>
       <S.Formbody>
         <S.Formbox>
           <S.Image src={searchIcon} onClick={() => {
-            console.log(localStorage.getItem('nickname'));
+            alert('무야호')
           }} />
           <S.FormInput onChange={onChangeFormInput} onKeyDown={loginPress} />
         </S.Formbox>
