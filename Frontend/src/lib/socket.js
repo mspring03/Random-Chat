@@ -16,6 +16,6 @@ class ChatSocket {
   }
 }
 
-const socket = new ChatSocket("http://localhost:80");
+const socket = new ChatSocket("http://18.188.163.120");
 
 export default socket;
