@@ -18,14 +18,30 @@ export const Formbody = styled.div`
 `;
 
 export const FormOptionsWrapper = styled.div`
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
     border-radius: 15px 0px 0px 15px;
     background-color: #EBEBEB;
     height: 250px;
     width: 7%;
 `;
 
-export const option = styled.div`
+export const option1 = styled.img`
+    width: 45px;
+    margin-bottom: -2px;
+    margin-left: 6px;
+`;
 
+export const option2 = styled.img`
+    width: 40px;
+    margin-left: 8px;
+    margin-bottom: -2px;
+`;
+
+export const option3 = styled.img`
+    width: 50px;
+    margin-left: 9px;
 `;
 
 export const UserProfile = styled.div`
@@ -49,7 +65,7 @@ export const FormUserImage = styled.div`
     height: 50px;
 `;
 
-export const Image = styled.div`
+export const Image = styled.img`
     width: 100%;
     height: 100%;
     border-radius: 30px;
