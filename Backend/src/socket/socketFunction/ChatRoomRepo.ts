@@ -59,16 +59,15 @@ class ChatRoomRepository {
             const matchingCheck = await ChatRoom.findOneAndUpdate({ socket: socket }, { $set: { matching: true }}, { new: false });
             if (matchingCheck == undefined || matchingCheck['matching']) return 0;
 
-            const roomPeopleCount = await ChatRoom.count({ matching: {$not: {$eq:true}}, tag: tag });
+            const roomPeopleCount = await ChatRoom.count({ socket: {$not: {$eq:socket}}, matching: {$not: {$eq:true}}, tag: tag });
             if (!roomPeopleCount) continue;
              
             const skipsize = Math.floor(Math.random() * roomPeopleCount);
 
             const matchedPeople = await ChatRoom.findOne({ matching: {$not: {$eq:true}}, tag: tag }).skip(skipsize).limit(1);  
-
             if (!matchedPeople) continue;
             
-            const check = await ChatRoom.findOneAndUpdate({ _id: matchedPeople['_id'], tag: tag, matching: {$not: {$eq:true}} }, { matching: true }, { new: true });
+            const check = await ChatRoom.findOneAndUpdate({ _id: matchedPeople['_id'], socket: {$not: {$eq:socket}}, tag: tag, matching: {$not: {$eq:true}} }, { matching: true }, { new: true });
             if (check) return check;
         } 
     }
