@@ -52,7 +52,15 @@ class App{
     }
 
     public socketServer(): void {
-        this.io = SocketIO.listen(this.httpServer, { origins: "*:*" });
+        this.io = SocketIO.listen(this.httpServer, { handlePreflightRequest: (req, res) => {
+            const headers = {
+                "Access-Control-Allow-Headers": "Content-Type, Authorization",
+                "Access-Control-Allow-Origin": req.headers.origin, //or the specific origin you want to give access to,
+                "Access-Control-Allow-Credentials": "true"
+            };
+            res.writeHead(200, headers);
+            res.end();
+        }});
         socketConnet(this.io);
     }
 
