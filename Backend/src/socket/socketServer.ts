@@ -54,8 +54,6 @@ export default (io: IO, socket) => {
         console.log(result);
         
         io.sockets.to(result['roomName']).emit('message', { data: result['data'], nickname: result['nickname'] });
-        // socket.emit('message', { data: 'akdadsf', nickname: '망나나망' })
-
     })
 
     socket.on('roomClosing', async (roomName) => {
