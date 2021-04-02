@@ -30,7 +30,7 @@ const Room = (props) => {
   const plusButtonOnClick = useCallback(() => {
         setViewList(
             [
-                viewList,
+                ...viewList,
                 <S.FormBoxFrame key={input} onClick={enterRoom} >
                     <S.Formname>{input}</S.Formname>
                     <S.Formpeople>0명 접속중</S.Formpeople>
