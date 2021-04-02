@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const BASE_URL = 'http://localhost';
+const BASE_URL = 'http://18.188.163.120';
 
 export const requestApi = async (url, body, header, method) => {
 	try {
