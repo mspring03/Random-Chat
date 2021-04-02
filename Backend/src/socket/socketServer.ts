@@ -66,6 +66,20 @@ export default (io: IO, socket) => {
         UserRepository.outRoom(roomName);
     })
 
+    socket.on('logout', async () => {
+        const User = await UserRepository.disconnect(socket.id);
+
+        if (User == null) return;
+        
+        if (User['accessRoom']) io.sockets.to(User['accessRoom']).emit("chatEnd");
+
+        const ChatRoom = await ChatRoomRepository.goOutRoom(socket.id);
+        if (ChatRoom) {
+            ChatRoomRepository.ChangedAllRoomPeople(io);
+            ChatRoomRepository.ChangedRoomPeople(io, ChatRoom['tag']);
+        }
+    })
+
     socket.on('disconnect', async () => {
         const User = await UserRepository.disconnect(socket.id);
 
