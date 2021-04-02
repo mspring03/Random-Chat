@@ -2,6 +2,7 @@
 /Backend/src/logs
 
 /Frontend/node_modules
+/Frontend/build
 
 .DS_Store
 .env
