@@ -4,6 +4,9 @@ import { useHistory } from "react-router-dom";
 import chatSocket from "../../lib/socket";
 import date from "../../lib/date";
 import sendImg from "../../assets/sendImg.svg";
+import addFriendImage from "../../assets/addFriendImage.svg";
+import reloadImage from "../../assets/reloadImage.svg";
+import outImage from "../../assets/outImage.svg";
 
 const socket = chatSocket.getSocket();
 
@@ -16,24 +19,9 @@ const Chating = () => {
   const [message, setMessage] = useState("");
   const history = useHistory();
 
-  useEffect(async () => {
-    const reloading = await localStorage.getItem("reloading");
-    console.log(reloading);
-    if (reloading) {
-      localStorage.removeItem("reloading");
-      socket.emit("online", localStorage.getItem("user_id"));
-      history.replace("/main");
-    }
-  }, []);
-
-  useEffect(() => {
-    window.addEventListener("beforeunload", async function (event) {
-      await localStorage.setItem("reloading", "true");
-    });
-  }, []);
-
   useEffect(() => {
     socket.on("randomUserFindingCompete", async (data) => {
+      console.log(data);
       if (data["info1"].id === localStorage.getItem("user_id")) {
         setName(data["info2"].nickname);
         setTag(data["info2"].tag);
@@ -41,6 +29,21 @@ const Chating = () => {
         setName(data["info1"].nickname);
         setTag(data["info1"].tag);
       }
+    });
+  }, []);
+
+  useEffect(async () => {
+    const reloading = await localStorage.getItem("reloadingChatingPage");
+    if (reloading) {
+      localStorage.removeItem("reloadingChatingPage");
+      socket.emit("online", localStorage.getItem("user_id"));
+      history.replace("/main");
+    }
+  }, []);
+
+  useEffect(() => {
+    window.addEventListener("beforeunload", async function (event) {
+      await localStorage.setItem("reloadingChatingPage", "true");
     });
   }, []);
 
@@ -164,10 +167,32 @@ const Chating = () => {
     [message]
   );
 
+  const reload = useCallback(() => {
+    socket.emit('roomClosing', localStorage.getItem("roomName"))
+    socket.emit('roomClear', localStorage.getItem("roomName"))
+    socket.emit('outRoom')
+    socket.emit("joinRoom", localStorage.getItem("tag"));
+    history.push('/loading')
+    localStorage.removeItem("roomName");
+  }, [])
+
+  const out = useCallback(() => {
+    socket.emit('outRoom', localStorage.getItem("tag"))
+    socket.emit('roomClosing', localStorage.getItem("roomName"))
+    socket.emit('roomClear', localStorage.getItem("roomName"))
+    history.push('/main')
+    localStorage.removeItem("tag");
+    localStorage.removeItem("roomName");
+  }, [])
+
   return (
     <S.Container>
       <S.Formbody>
-        <S.FormOptionsWrapper></S.FormOptionsWrapper>
+        <S.FormOptionsWrapper>
+          <S.option1 src={addFriendImage}/>
+          <S.option2 src={reloadImage} onClick={reload}/>
+          <S.option3 src={outImage} onClick={out}/>
+        </S.FormOptionsWrapper>
         <S.ChatingBox>
           <S.UserProfile>
             <S.FormUserImage>
