@@ -1,8 +1,11 @@
-import React, { useState, useCallback, useRef } from "react";
+import React, { useState, useCallback, useRef, useEffect } from "react";
 import { authImage } from "../../../assets";
 import { requestApi } from "../../../APIrequest";
 import * as S from "./style";
 import { useHistory } from "react-router-dom";
+import chatSocket from '../../../lib/socket'
+
+const socket = chatSocket.getSocket();
 
 const GuestLogin = () => {
   const [nickname, changeNickname] = useState("");
@@ -13,6 +16,16 @@ const GuestLogin = () => {
   const formRefs = {
     nickname: useRef(),
   };
+
+  useEffect(() => {
+    localStorage.removeItem('access_token');
+    localStorage.removeItem('user_id');
+    localStorage.removeItem('nickname');
+    localStorage.removeItem('guest'); 
+    localStorage.removeItem("reloadingRoomListPage");
+    localStorage.removeItem("reloadingLoadingPage");
+    localStorage.removeItem("reloadingChatingPage");
+  }, [])
 
   const onChange = useCallback((e) => {
     changeNickname(e.target.value);
@@ -46,6 +59,8 @@ const GuestLogin = () => {
       localStorage.setItem("user_id", res.data.data.user.id);
       localStorage.setItem("nickname", res.data.data.user.nickname);
       localStorage.setItem("guest", res.data.data.user.guest);
+
+      socket.emit("online", localStorage.getItem("user_id"));   
 
       history.push("/main");
     } catch (err) {
