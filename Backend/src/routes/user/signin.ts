@@ -11,6 +11,7 @@ import { createTokens } from '../../auth/authUtils';
 import {
   BadRequestError,
   AuthFailureError,
+  ConflictError
 } from '../../core/apiError';
 import UserRepository from '../../database/repository/UserRepo';
 
@@ -25,6 +26,7 @@ router.post(
 
     const match = await bcrypt.compare(req.body.password, user['password']);
     if (!match) throw new AuthFailureError('Authentication failure');
+    if (user['connection']) throw new ConflictError('already login')
 
     const accessTokenKey = crypto.randomBytes(64).toString('hex');
     const refreshTokenKey = crypto.randomBytes(64).toString('hex');
