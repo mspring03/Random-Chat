@@ -10,14 +10,20 @@ const Loading = () => {
   const history = useHistory();
   const socket = chatSocket.getSocket();
   
-  useEffect(() => {
-    const reloading = sessionStorage.getItem("reloading");
+  useEffect(async () => {
+    const reloading = await localStorage.getItem("reloadingLoadingPage");
     if (reloading) {
-        sessionStorage.removeItem("reloading");
+        localStorage.removeItem("reloadingLoadingPage");
         socket.emit("online", localStorage.getItem("user_id"));
         history.push('/main')
     }
-  })
+  }, [])
+
+  useEffect(() => {
+    window.addEventListener("beforeunload", async function(event) {
+      await localStorage.setItem("reloadingLoadingPage", "true");
+    });
+  }, []);
 
   useEffect(() => {
     socket.on('numberOfPropleMyRoom', async (data) => {
@@ -26,18 +32,13 @@ const Loading = () => {
   }, [])
 
   useEffect(() => {
-    window.addEventListener("beforeunload", function(event) {
-      sessionStorage.setItem("reloading", "true");
-    });
-  }, []);
-
-  useEffect(() => {
     socket.emit('matching', localStorage.getItem('tag'))
   }, [])
 
   useEffect(() => {
     socket.on('join', async (roomName) => {
       socket.emit('roomjoin', roomName);
+      console.log(1234);
       history.push('/chating');
       localStorage.setItem('roomName', roomName);
     })
