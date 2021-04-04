@@ -12,7 +12,7 @@ RUN npm install -g nodemon
 RUN npm install -g ts-node 
 RUN npm install -g typescript
 
-WORKDIR src
+WORKDIR /src
 
 #컨테이너에서 실행될 명령을 지정
 
