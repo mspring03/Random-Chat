@@ -36,7 +36,7 @@ const Header = () => {
         <S.Container>
             <S.Formbody>
                 <S.FormBox onClick={out}>
-                    체팅방목록
+                    채팅방목록
                 </S.FormBox>
                 <S.FormBox>
                     마이페이지
