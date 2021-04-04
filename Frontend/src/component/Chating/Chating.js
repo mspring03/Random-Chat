@@ -21,7 +21,6 @@ const Chating = () => {
 
   useEffect(() => {
     socket.on("randomUserFindingCompete", async (data) => {
-      console.log(data);
       if (data["info1"].id === localStorage.getItem("user_id")) {
         setName(data["info2"].nickname);
         setTag(data["info2"].tag);
