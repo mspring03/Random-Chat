@@ -40,8 +40,8 @@ export default (io: IO, socket) => {
         io.to(matchedUser['socket']).emit('join', roomName);
         io.to(socket.id).emit('join', roomName);
 
-        UserRepository.joinRoom(socket.id, roomName);
-        UserRepository.joinRoom(matchedUser['socket'], roomName)
+        await UserRepository.joinRoom(socket.id, roomName);
+        await UserRepository.joinRoom(matchedUser['socket'], roomName);
 
         io.sockets.to(roomName).emit('randomUserFindingCompete', { info1: myInfo, info2: userInfo })
     })
