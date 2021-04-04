@@ -11,8 +11,8 @@ import outImage from "../../assets/outImage.svg";
 const socket = chatSocket.getSocket();
 
 const Chating = () => {
-  const [name, setName] = useState("%%%%%");
-  const [tag, setTag] = useState("%%%%%%%%%%%%%");
+  const [name, setName] = useState("");
+  const [tag, setTag] = useState("");
   const [data, setData] = useState({});
   const [messageList, setMessageList] = useState([]);
   const [lastLog, setLastLog] = useState("");
