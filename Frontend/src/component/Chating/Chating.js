@@ -161,6 +161,7 @@ const Chating = () => {
   const Press = useCallback(
     (e) => {
       if (e.keyCode === 13) {
+        setMessage('')
         onClick();
       }
     },
@@ -208,11 +209,11 @@ const Chating = () => {
             <S.FormChating>
               <S.FormWrap id="messageWrapper">{messageList}</S.FormWrap>
             </S.FormChating>
-            <S.FormInput>
-              <S.Input id="Input" onChange={onChange} onKeyDown={Press} />
+          </S.Chat>
+          <S.FormInput>
+              <S.Input id="Input" onChange={onChange} onKeyDown={Press} autoComplete="off"/>
               <S.InputImage src={sendImg} onClick={onClick} />
             </S.FormInput>
-          </S.Chat>
         </S.ChatingBox>
       </S.Formbody>
     </S.Container>
