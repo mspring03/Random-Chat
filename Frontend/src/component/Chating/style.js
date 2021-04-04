@@ -102,8 +102,9 @@ export const line = styled.div`
 `;
 
 export const FormChating = styled.div`
-    height: 90%;
+    height: 95%;
     width: 100%;
+    padding: 1px;
     box-sizing: border-box;
 `;
 
@@ -225,7 +226,7 @@ export const InputImage = styled.img`
 `;
 
 export const Chat = styled.div`
-    height: 100%;
+    height: 93%;
     margin-top: -100px;
     display: flex;
     flex-direction: column;
