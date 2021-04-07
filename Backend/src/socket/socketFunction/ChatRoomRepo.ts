@@ -54,7 +54,8 @@ class ChatRoomRepository {
         while(1) {
             await ChatRoom.findOneAndUpdate({ socket: socket }, { $set: { matching: false }});
                       
-            await this.sleep(3000);
+            const ranNum = Math.floor(Math.random() * 4);
+            await this.sleep(ranNum * 1000);
 
             const matchingCheck = await ChatRoom.findOneAndUpdate({ socket: socket }, { $set: { matching: true }}, { new: false });
             if (matchingCheck == undefined || matchingCheck['matching']) return 0;
@@ -71,8 +72,6 @@ class ChatRoomRepository {
             if (check) return check;
         } 
     }
-
-
 }
 
 export default ChatRoomRepository;
