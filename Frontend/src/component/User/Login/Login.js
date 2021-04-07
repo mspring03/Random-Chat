@@ -50,13 +50,6 @@ const Login = () => {
 
     const login = useCallback(async () => {
         try {
-            localStorage.removeItem('access_token');
-            localStorage.removeItem('user_id');
-            localStorage.removeItem('nickname');
-            localStorage.removeItem('guest'); 
-            localStorage.removeItem("reloadingRoomListPage");
-            localStorage.removeItem("reloadingLoadingPage");
-            localStorage.removeItem("reloadingChatingPage");
             const res = await requestApi(
 				'/signin/basic',
 				{ id: id, password: password },
