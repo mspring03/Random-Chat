@@ -27,10 +27,12 @@ export default (io: IO, socket) => {
 
     socket.on('matching', async (tag: string) => {
         const matchedUser = await ChatRoomRepository.userMatching(socket.id, tag);
-        if (!matchedUser) return 0;
+        if (!matchedUser) return;
         
         const myInfo = await UserRepository.FindBySocketID(socket.id);
         const userInfo = await UserRepository.FindBySocketID(matchedUser['socket']);
+        
+        if (!myInfo || !userInfo) return;
         
         const chatLog = await ChatLogRepository.findChatLog(myInfo['nickname'], userInfo['nickname']); 
         let roomName = chatLog ? chatLog['roomName'] : '';
@@ -51,8 +53,6 @@ export default (io: IO, socket) => {
     })
 
     socket.on('messageSend', async (result) => {
-        console.log(result);
-        
         io.sockets.to(result['roomName']).emit('message', { data: result['data'], nickname: result['nickname'] });
     })
 
