@@ -37,8 +37,8 @@ const Loading = () => {
 
   useEffect(() => {
     socket.on('join', async (roomName) => {
-      history.push('/chating');
       socket.emit('roomjoin', roomName);
+      history.push('/chating');
       localStorage.setItem('roomName', roomName);
     })
   }, [])
